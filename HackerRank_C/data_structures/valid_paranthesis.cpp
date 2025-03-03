@@ -56,26 +56,47 @@
 // Similar Questions
 // Discussion (474)
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <iostream>
+#include <stack>
+#include <unordered_map>
+#include <string>
 
-int main() {
-    int stack[100]; // Assuming a fixed-size stack (dynamic memory allocation can also be used)
-    int top = -1;   // Stack top pointer
+using namespace std;
 
-    // Example push operation
-    stack[++top] = 10;
-    stack[++top] = 20;
+class Solution {
+public:
+    bool isValid(string s) {
+        stack<char> st;
+        unordered_map<char, char> bracket_map = {{')', '('}, {'}', '{'}, {']', '['}};
 
-    // Equivalent of `top_element = stack.pop() if stack else '#'`
-    int top_element;
-    if (top >= 0) {
-        top_element = stack[top--]; // Pop operation
-    } else {
-        top_element = '#'; // Default value when stack is empty
+        for (char ch : s) {
+            if (bracket_map.count(ch)) { // If it's a closing bracket
+                char top_element = st.empty() ? '#' : st.top();
+                if (top_element != bracket_map[ch]) {
+                    return false; // Mismatch found
+                }
+                st.pop();
+            } else {
+                st.push(ch); // Push opening bracket
+            }
+        }
+
+        return st.empty();
     }
+};
 
-    printf("Top Element: %c\n", (top_element == '#') ? '#' : top_element + '0'); // Print top element
+// Example usage (optional)
+int main() {
+    Solution sol;
+
+    // Test cases
+    cout << "isValid(\"()[]{}\"): " << (sol.isValid("()[]{}") ? "true" : "false") << endl;
+    cout << "isValid(\"(]\"): " << (sol.isValid("(]") ? "true" : "false") << endl;
+    cout << "isValid(\"([)]\"): " << (sol.isValid("([)]") ? "true" : "false") << endl;
+    cout << "isValid(\"{[]}\"): " << (sol.isValid("{[]}") ? "true" : "false") << endl;
+    cout << "isValid(\"(\"): " << (sol.isValid("(") ? "true" : "false") << endl;
+    cout << "isValid(\"]\"): " << (sol.isValid("]") ? "true" : "false") << endl;
+    cout << "isValid(\"\"): " << (sol.isValid("") ? "true" : "false") << endl;
 
     return 0;
 }
